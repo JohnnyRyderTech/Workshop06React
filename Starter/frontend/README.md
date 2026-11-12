@@ -1,81 +1,58 @@
-# Frontend Starter
+# WS06 Blog – Frontend
 
-Starter package for WS06 React tasks.
+React single-page application for the WS06 blog, built with Vite and React Router.
 
-Your goal is to build the full React frontend that works with the backend API.
+## Setup
 
-## Before You Start
-
-1. Start the backend server first (from `Starter/backend`).
-2. Then start this frontend app.
-
-Frontend commands:
+Start the [backend](../backend/) first, then:
 
 ```bash
 npm install
 npm run dev
 ```
 
-The app uses Vite proxy, so API calls to `/api/posts` go to `http://localhost:3000` in development.
+Open `http://localhost:5173`.
 
-## What You Need To Build
+### Scripts
 
-Implement the TODOs inside these files:
+| Command | What it does |
+|---|---|
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Build for production into `dist/` |
+| `npm run preview` | Preview the production build |
 
-- Routing:
-  - `src/App.jsx`
-- Navigation:
-  - `src/components/Header.jsx`
-- Reusable form:
-  - `src/components/PostForm.jsx`
-- Pages:
-  - `src/pages/HomePage.jsx`
-  - `src/pages/NewPostPage.jsx`
-  - `src/pages/EditPostPage.jsx`
-  - `src/pages/PostPage.jsx`
+## Routes
 
-## Suggested Milestone Order
+| Path | Page | What it does |
+|---|---|---|
+| `/` | `LandingPage` | Introduction and links to the blog |
+| `/about` | `AboutPage` | Background of the workshop |
+| `/contact` | `ContactPage` | Development tips |
+| `/blog` | `HomePage` | Lists all posts from `GET /api/posts` |
+| `/posts/new` | `NewPostPage` | Creates a post with `POST /api/posts` |
+| `/posts/:id` | `PostPage` | Shows one post; delete with `DELETE /api/posts/:id` |
+| `/posts/:id/edit` | `EditPostPage` | Loads the post and saves with `PUT /api/posts/:id` |
+| `*` | `NotFoundPage` | 404 page for unknown routes |
 
-1. Routing and navigation
-	- Make sure routes and links work for `/`, `/blog`, and post routes.
+## Project structure
 
-2. Read all posts
-	- In `HomePage`, fetch `GET /api/posts`.
-	- Show loading and error states.
-	- Render posts using `PostCard`.
+```text
+src/
+├─ main.jsx              # entry point
+├─ App.jsx               # route definitions
+├─ api/posts.js          # all fetch calls to the backend
+├─ components/
+│  ├─ Header.jsx         # navigation with NavLink
+│  ├─ PostCard.jsx       # post preview in the list
+│  └─ PostForm.jsx       # shared form for create and edit
+├─ pages/                # one component per route
+├─ App.css
+└─ index.css
+```
 
-3. Create a post
-	- In `NewPostPage`, handle form submit.
-	- Send `POST /api/posts`.
-	- Navigate to `/posts/:id` after success.
+## How it works
 
-4. Read one post
-	- In `PostPage`, fetch `GET /api/posts/:id` using route param.
-	- Render post detail content.
-
-5. Edit a post
-	- In `EditPostPage`, load current data with `GET /api/posts/:id`.
-	- Submit updates with `PUT /api/posts/:id`.
-
-6. Delete a post
-	- In `PostPage`, implement delete with `DELETE /api/posts/:id`.
-	- Navigate back to `/blog` after delete.
-
-## API Endpoints
-
-- `GET /api/posts`
-- `GET /api/posts/:id`
-- `POST /api/posts`
-- `PUT /api/posts/:id`
-- `DELETE /api/posts/:id`
-
-## Done Checklist
-
-- [ ] All TODOs in selected frontend files are completed
-- [ ] Blog list page loads posts from API
-- [ ] New post form creates a post
-- [ ] Single post page shows one post by id
-- [ ] Edit page updates post data
-- [ ] Delete action removes a post and redirects to blog
-- [ ] No console errors in browser
-- [ ] App works with backend running on port 3000
+- **API module:** `src/api/posts.js` wraps `fetch`. It sends JSON and throws an error with the server's message when a request fails, so pages only need `try/catch` or `.catch()`.
+- **Data loading:** pages fetch in `useEffect` and track `loading` and `error` state. An `AbortController` cancels the request if the user leaves the page before it finishes.
+- **Forms:** `PostForm` uses uncontrolled inputs. On submit, the page reads the values with `FormData`, sends them, and navigates to the post when the request succeeds.
+- **Proxy:** `vite.config.js` forwards `/api` requests to `http://localhost:3000`, so the frontend only uses relative URLs.

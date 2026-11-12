@@ -1,14 +1,8 @@
-# Backend Starter
+# WS06 Blog – Backend
 
-Starter package for WS06 backend tasks.
+Express REST API that stores blog posts in MongoDB using Mongoose.
 
-Your goal is to complete the missing backend logic so the frontend can perform full CRUD operations.
-
-## Before You Start
-
-1. Install dependencies.
-2. Create a local .env file from .env.example.
-3. Start the server.
+## Setup
 
 ```bash
 npm install
@@ -16,87 +10,76 @@ cp .env.example .env
 npm run dev
 ```
 
-Default API base URL:
-- http://localhost:3000/api/posts
+### Environment variables
 
-## Files You Need To Complete
+Create a `.env` file in this folder (it is ignored by git):
 
-- server.js — **connectToDatabase function** (see the TODO comment in the file)
-- models/Post.js
-- routes/posts.js
-
-## What To Implement
-
-### 1) connectToDatabase function in server.js
-
-A TODO comment at the top of server.js describes exactly what this function should do:
-
-```
-✓ Check if process.env.MONGODB_URI exists
-  - If missing, log a warning and return early
-✓ Use try-catch to safely call mongoose.connect()
-✓ Pass options: { dbName: 'blog' }
-✓ Log "Connected to MongoDB" on success
-✓ Log "MongoDB connection error: <error.message>" on failure
-✓ Make it async (return a Promise)
+```env
+MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/blog
+PORT=3000
 ```
 
-**Hint:** Check the solution file at `solution/backend/server.js` to see a working example, or review WS05 Server.js for similar patterns.
+The app connects to the `blog` database. If `MONGODB_URI` is missing, the server still starts but logs a warning, and database requests will fail.
 
-### 2) Post model in models/Post.js
+### Scripts
 
-Define schema fields:
-- title: String, required, trim, minlength
-- content: String, required, trim, minlength
-- author: String, required, trim
+| Command | What it does |
+|---|---|
+| `npm run dev` | Start with nodemon (restarts on file changes) |
+| `npm start` | Start with plain Node |
 
-Enable timestamps so createdAt and updatedAt are stored automatically.
+## Project structure
 
-### 3) Missing routes in routes/posts.js
+```text
+backend/
+├─ server.js        # Express app, JSON parsing, routes, 404/500 handlers, DB connection
+├─ models/Post.js   # Mongoose schema and model
+├─ routes/posts.js  # CRUD routes for /api/posts
+├─ .env.example     # template for .env
+└─ package.json
+```
 
-Already implemented:
-- POST /api/posts
-- GET /api/posts
-- GET /api/posts/:id
+## Post model
 
-You need to implement:
-- PUT /api/posts/:id
-- DELETE /api/posts/:id
+| Field | Type | Rules |
+|---|---|---|
+| `title` | String | required, trimmed, min 3 characters |
+| `content` | String | required, trimmed, min 10 characters |
+| `author` | String | required, trimmed |
+| `createdAt` / `updatedAt` | Date | added automatically (`timestamps: true`) |
 
-Requirements for PUT:
-- validate ObjectId
-- update by id with runValidators true
-- return updated document
-- return 404 when post is missing
-- return 400 for validation issues
+## API
 
-Requirements for DELETE:
-- validate ObjectId
-- delete by id
-- return 404 when post is missing
-- return success JSON message when deleted
+Base URL: `http://localhost:3000/api/posts`
 
-## Suggested Milestone Order
+| Method | Path | Body | Success | Errors |
+|---|---|---|---|---|
+| GET | `/` | – | 200, array of posts (newest first) | 500 |
+| GET | `/:id` | – | 200, one post | 400 invalid id, 404 not found |
+| POST | `/` | `{ title, content, author }` | 201, created post | 400 validation error |
+| PUT | `/:id` | any of `{ title, content, author }` | 200, updated post | 400 invalid id or validation error, 404 not found |
+| DELETE | `/:id` | – | 200, `{ message, id }` | 400 invalid id, 404 not found |
 
-1. Get server running with database connection.
-2. Complete Post model.
-3. Finish PUT route.
-4. Finish DELETE route.
-5. Test all endpoints.
+All responses are JSON. Errors use the form `{ "error": "message" }`. Unknown routes return `404 { "error": "Route not found" }`.
 
-## Quick Test Sequence
+### Example requests
 
-1. POST /api/posts
-2. GET /api/posts
-3. GET /api/posts/:id
-4. PUT /api/posts/:id
-5. DELETE /api/posts/:id
+```bash
+# Create
+curl -X POST http://localhost:3000/api/posts \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Hello","content":"My first blog post here.","author":"Johnny"}'
 
-## Done Checklist
+# List
+curl http://localhost:3000/api/posts
 
-- [ ] Server starts without syntax errors
-- [ ] MongoDB connection works
-- [ ] Post model validations work
-- [ ] PUT route is implemented and tested
-- [ ] DELETE route is implemented and tested
-- [ ] All API responses are valid JSON
+# Update
+curl -X PUT http://localhost:3000/api/posts/<id> \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Hello again"}'
+
+# Delete
+curl -X DELETE http://localhost:3000/api/posts/<id>
+```
+
+Updates run the schema validators too (`runValidators: true`), so the same rules apply to create and update.

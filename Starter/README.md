@@ -1,64 +1,35 @@
-# WS06 Starter
+# WS06 Blog – Application
 
-This folder contains the starter version of the WS06 full stack blog exercise.
+This folder contains the two parts of the application:
 
-Students will complete both parts:
+| Folder | What it is | Port |
+|---|---|---|
+| [`backend/`](backend/) | Express + Mongoose REST API for blog posts | 3000 |
+| [`frontend/`](frontend/) | React + Vite single-page application | 5173 |
 
-- `backend/` for the API and MongoDB logic
-- `frontend/` for the React app and CRUD user interface
+## Running the app
 
-## Student ToDos
+Run the backend and the frontend in separate terminals.
 
-### Backend
+```bash
+# Terminal 1 – backend
+cd backend
+npm install
+cp .env.example .env    # add your MONGODB_URI
+npm run dev
 
-Work inside `Starter/backend`.
+# Terminal 2 – frontend
+cd frontend
+npm install
+npm run dev
+```
 
-Brief tasks:
+Then open `http://localhost:5173`.
 
-- install dependencies and start the server
-- connect the app to MongoDB
-- complete the `Post` model validation rules
-- finish the missing `PUT` and `DELETE` routes
-- verify that all API responses return valid JSON
+## How the parts connect
 
-Main files:
+```text
+Browser ──► Vite dev server :5173 ──(proxy /api/*)──► Express :3000 ──► MongoDB Atlas
+```
 
-- `server.js`
-- `models/Post.js`
-- `routes/posts.js`
-
-See the detailed instructions in `backend/README.md`.
-
-### Frontend
-
-Work inside `Starter/frontend`.
-
-Brief tasks:
-
-- install dependencies and run the Vite app
-- complete the React Router setup
-- build navigation links in the header
-- fetch and render all blog posts
-- create a new post with the reusable form
-- show a single post page
-- edit an existing post
-- delete a post and redirect back to the blog list
-
-Main files:
-
-- `src/App.jsx`
-- `src/components/Header.jsx`
-- `src/components/PostForm.jsx`
-- `src/pages/HomePage.jsx`
-- `src/pages/NewPostPage.jsx`
-- `src/pages/EditPostPage.jsx`
-- `src/pages/PostPage.jsx`
-
-See the detailed instructions in `frontend/README.md`.
-
-## Recommended Order
-
-1. Finish the backend first.
-2. Start the backend server.
-3. Complete the frontend against the running API.
-4. Test the full CRUD flow end to end.
+The React app only calls relative URLs like `/api/posts`. In development, Vite forwards them to the Express server.

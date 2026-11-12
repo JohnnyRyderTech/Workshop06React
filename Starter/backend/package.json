@@ -1,7 +1,7 @@
 {
-  "name": "workshop05-rest-api",
+  "name": "ws06-blog-backend",
   "version": "1.0.0",
-  "description": "Express.js workshop starter for page routes and REST API CRUD with MongoDB",
+  "description": "Express + Mongoose REST API for the WS06 React blog (CRUD for posts)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -15,8 +15,8 @@
     "crud",
     "blog"
   ],
-  "author": "Laurea FullStack 2026",
-  "license": "ISC",
+  "author": "JohnnyRyderTech",
+  "license": "MIT",
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.21.2",

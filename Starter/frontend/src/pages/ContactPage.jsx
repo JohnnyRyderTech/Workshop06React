@@ -4,10 +4,10 @@ function ContactPage() {
       <p className="eyebrow">Contact</p>
       <h1 className="page-title">Need help while building the API?</h1>
       <p className="page-copy">
-        Review the TODO comments in the backend starter files, test one endpoint at a time, and keep the frontend requests pointed at the existing <code>/api/posts</code> routes.
+        Test one endpoint at a time with Postman or the browser's Network tab, and keep the frontend requests pointed at the existing <code>/api/posts</code> routes.
       </p>
       <p className="page-copy">
-        During development, run the React app through Vite and the backend separately. In production mode, Express can serve the React build and the API from the same host.
+        During development, run the React app through Vite and the backend separately. Vite proxies every <code>/api</code> request to the Express server on port 3000.
       </p>
     </section>
   )

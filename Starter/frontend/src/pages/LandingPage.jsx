@@ -37,7 +37,7 @@ function LandingPage() {
           <p className="eyebrow">Workflow</p>
           <h2>Development and production stay separate</h2>
           <p>
-            Vite handles local frontend development, while Express can serve the production build as a single-page app.
+            Vite runs the React app on port 5173 and proxies API calls to the Express server on port 3000.
           </p>
         </article>
       </section>
