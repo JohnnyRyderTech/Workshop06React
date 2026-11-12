@@ -1,10 +1,6 @@
-// TODO (student): Build this reusable form so both NewPostPage and EditPostPage can use it.
-// Suggested requirements:
-// - Accept props: initialData, onSubmit, submitting
-// - Render title, author, and content fields
-// - Pre-fill fields with initialData values when provided
-// - Call onSubmit when the form is submitted
-// - Disable the submit button while submitting === true
+// Reusable form for creating (NewPostPage) and editing (EditPostPage) a post.
+// Props: initialData pre-fills the fields, onSubmit handles submit,
+// submitting disables the button while a request is in flight.
 
 function PostForm({ initialData = {}, onSubmit, submitting }) {
   return (

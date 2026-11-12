@@ -1,13 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import PostForm from '../components/PostForm.jsx'
+import { getPost, updatePost } from '../api/posts.js'
 
-// TODO (student): Implement edit flow.
-// Suggested steps:
-// 1) Fetch existing post with GET /api/posts/:id.
-// 2) Pass fetched data to PostForm as initialData.
-// 3) On submit, send PUT /api/posts/:id.
-// 4) Navigate back to /posts/:id after successful save.
 function EditPostPage() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -17,9 +12,22 @@ function EditPostPage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
 
+  // Load the existing post so the form can be pre-filled
   useEffect(() => {
-    // TODO (student): Replace this placeholder with GET /api/posts/:id fetch logic.
-    setLoading(false)
+    const controller = new AbortController()
+    setLoading(true)
+    setError(null)
+
+    getPost(id, { signal: controller.signal })
+      .then((data) => setPost(data))
+      .catch((err) => {
+        if (err.name !== 'AbortError') setError(err.message)
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false)
+      })
+
+    return () => controller.abort()
   }, [id])
 
   async function handleSubmit(e) {
@@ -27,14 +35,25 @@ function EditPostPage() {
     setSubmitting(true)
     setError(null)
 
-    // TODO (student): Implement PUT /api/posts/:id.
-    setError('TODO: implement PUT /api/posts/:id in EditPostPage')
-    setSubmitting(false)
+    const formData = new FormData(e.target)
+    const payload = {
+      title: formData.get('title'),
+      content: formData.get('content'),
+      author: formData.get('author'),
+    }
+
+    try {
+      await updatePost(id, payload)
+      navigate(`/posts/${id}`)
+    } catch (err) {
+      setError(`Could not save changes: ${err.message}`)
+      setSubmitting(false)
+    }
   }
 
   if (loading) return <p className="status-msg">Loading…</p>
   if (error && !post) return <p className="status-msg error">{error}</p>
-  if (!post) return <p className="status-msg">TODO: Load a post before editing.</p>
+  if (!post) return <p className="status-msg">Post not found.</p>
 
   return (
     <div>

@@ -10,20 +10,21 @@ import NewPostPage from './pages/NewPostPage.jsx'
 import EditPostPage from './pages/EditPostPage.jsx'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 
-// TODO (student): Complete and verify the route map.
-// Suggested milestone order:
-// 1) Keep basic pages working: /, /about, /contact
-// 2) Add blog listing route: /blog
-// 3) Add CRUD routes: /posts/new, /posts/:id, /posts/:id/edit
-// 4) Keep '*' as a fallback not found route
-
+// Route map:
+//   /                -> LandingPage
+//   /about           -> AboutPage
+//   /contact         -> ContactPage
+//   /blog            -> HomePage (list of all posts)
+//   /posts/new       -> NewPostPage
+//   /posts/:id       -> PostPage
+//   /posts/:id/edit  -> EditPostPage
+//   *                -> NotFoundPage (fallback)
 function App() {
   return (
     <BrowserRouter>
       <Header />
       <main className="main">
         <Routes>
-          {/* TODO (student): Confirm each route points to the expected page component. */}
           <Route path="/"               element={<LandingPage />} />
           <Route path="/about"          element={<AboutPage />} />
           <Route path="/contact"        element={<ContactPage />} />

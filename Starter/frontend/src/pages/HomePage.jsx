@@ -1,24 +1,30 @@
 import { useEffect, useState } from 'react'
 import PostCard from '../components/PostCard.jsx'
+import { getPosts } from '../api/posts.js'
 
-// TODO (student): Fetch all posts from the backend and render them.
-// Suggested steps:
-// 1) Keep local state for posts, loading, and error.
-// 2) In useEffect, call GET /api/posts.
-// 3) Show loading and error states.
-// 4) Map posts into PostCard components.
 function HomePage() {
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    // TODO (student): Replace this placeholder with real fetch logic.
-    setLoading(false)
+    // AbortController cancels the request if the user leaves the page early
+    const controller = new AbortController()
+
+    getPosts({ signal: controller.signal })
+      .then((data) => setPosts(data))
+      .catch((err) => {
+        if (err.name !== 'AbortError') setError(err.message)
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false)
+      })
+
+    return () => controller.abort()
   }, [])
 
   if (loading) return <p className="status-msg">Loading posts…</p>
-  if (error) return <p className="status-msg error">{error}</p>
+  if (error) return <p className="status-msg error">Could not load posts: {error}</p>
 
   return (
     <div className="blog-page">
@@ -26,12 +32,12 @@ function HomePage() {
         <p className="eyebrow">Blog</p>
         <h1 className="page-title">All posts</h1>
         <p className="page-copy">
-          TODO: Implement fetching posts from <code>/api/posts</code>.
+          {posts.length} {posts.length === 1 ? 'post' : 'posts'}, newest first.
         </p>
       </div>
 
       {posts.length === 0 ? (
-        <p className="status-msg">No posts yet. Implement fetch logic in HomePage first.</p>
+        <p className="status-msg">No posts yet. Write the first one!</p>
       ) : (
         <ul className="post-list">
           {posts.map((post) => (
