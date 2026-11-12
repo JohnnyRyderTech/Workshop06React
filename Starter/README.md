@@ -33,3 +33,7 @@ Browser ──► Vite dev server :5173 ──(proxy /api/*)──► Express :3
 ```
 
 The React app only calls relative URLs like `/api/posts`. In development, Vite forwards them to the Express server.
+
+## Production
+
+In production (Render), the frontend is built into `frontend/dist`, and the Express server serves it together with the API. Every route that isn't `/api/...` returns `index.html`, so React Router handles it. See the Deployment section in the [main README](../README.md#deployment-render).

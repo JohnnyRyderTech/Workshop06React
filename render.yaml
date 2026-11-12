@@ -1,0 +1,15 @@
+# Render Blueprint: one web service that serves the API and the React build.
+# MONGODB_URI is a secret: Render asks for its value when the Blueprint is created.
+services:
+  - type: web
+    name: workshop06react
+    runtime: node
+    plan: free
+    rootDir: Starter
+    buildCommand: npm ci --prefix frontend --include=dev && npm run build --prefix frontend && npm ci --prefix backend --omit=dev
+    startCommand: npm start --prefix backend
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: MONGODB_URI
+        sync: false

@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
@@ -28,6 +30,21 @@ app.use(express.json());
 // REST API routes
 app.use('/api/posts', postsRouter);
 
+// Unknown API routes always answer with JSON
+app.use('/api', (req, res) => {
+  res.status(404).json({ error: 'Route not found' });
+});
+
+// In production (Render), serve the built React app from frontend/dist.
+// Any other GET route returns index.html so React Router can handle it.
+const distDir = path.join(__dirname, '..', 'frontend', 'dist');
+if (fs.existsSync(distDir)) {
+  app.use(express.static(distDir));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(distDir, 'index.html'));
+  });
+}
+
 // 404 handler for unmatched routes
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
@@ -45,5 +62,6 @@ connectToDatabase().then(() => {
     console.log(`Server is running on http://localhost:${PORT}`);
     console.log('Mounted routers:');
     console.log('  /api/posts -> routes/posts.js');
+    if (fs.existsSync(distDir)) console.log('  /* -> React build (frontend/dist)');
   });
 });

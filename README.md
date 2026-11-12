@@ -29,6 +29,7 @@ The frontend is a React single-page application (Vite + React Router). It talks 
 Workshop06React/
 ├─ README.md            # this file
 ├─ requirements.md      # original workshop requirements
+├─ render.yaml          # Render deployment blueprint
 └─ Starter/
    ├─ backend/          # Express + Mongoose REST API (port 3000)
    │  ├─ models/Post.js
@@ -71,6 +72,24 @@ npm run dev
 ```
 
 Open `http://localhost:5173`. Vite proxies every `/api` request to the backend on port 3000, so no CORS setup is needed during development.
+
+## Deployment (Render)
+
+The app is deployed as **one Render web service**. Render builds the React app, and Express serves both the API (`/api/posts`) and the built frontend (`frontend/dist`) from the same address, so no CORS or separate API URL is needed.
+
+**Live demo:** _add your Render URL here_
+
+Settings (also stored in [`render.yaml`](render.yaml) as a Render Blueprint):
+
+| Setting | Value |
+|---|---|
+| Runtime | Node |
+| Root Directory | `Starter` |
+| Build Command | `npm ci --prefix frontend --include=dev && npm run build --prefix frontend && npm ci --prefix backend --omit=dev` |
+| Start Command | `npm start --prefix backend` |
+| Environment variables | `MONGODB_URI` (your Atlas connection string), `NODE_VERSION=22` |
+
+MongoDB Atlas must allow connections from Render: in Atlas, **Network Access** → add `0.0.0.0/0`. Render's free plan has no fixed IP address. On the free plan the service sleeps after a period of no traffic, so the first request after that can take up to a minute.
 
 ## REST API
 

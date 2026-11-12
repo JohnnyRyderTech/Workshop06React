@@ -32,7 +32,7 @@ The app connects to the `blog` database. If `MONGODB_URI` is missing, the server
 
 ```text
 backend/
-├─ server.js        # Express app, JSON parsing, routes, 404/500 handlers, DB connection
+├─ server.js        # Express app, JSON parsing, routes, React build in production, 404/500 handlers, DB connection
 ├─ models/Post.js   # Mongoose schema and model
 ├─ routes/posts.js  # CRUD routes for /api/posts
 ├─ .env.example     # template for .env
@@ -83,3 +83,12 @@ curl -X DELETE http://localhost:3000/api/posts/<id>
 ```
 
 Updates run the schema validators too (`runValidators: true`), so the same rules apply to create and update.
+
+## Serving the frontend in production
+
+If `../frontend/dist` exists (after `npm run build` in the frontend), the server also serves the React app:
+
+- `/api/...` routes work as described above. Unknown API routes return a JSON 404.
+- Every other GET route returns `frontend/dist/index.html`, so React Router can handle routes like `/blog` and `/posts/:id`.
+
+On Render, `PORT` comes from Render, and `MONGODB_URI` is set as an environment variable in the dashboard instead of a `.env` file.
