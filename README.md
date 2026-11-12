@@ -1,5 +1,7 @@
 # Workshop 06 – React Blog with a REST API
 
+**Live demo:** https://workshop06react.onrender.com
+
 A full-stack blog application built for **Workshop 06** of the *Web kehitys 2 – Full Stack* course at Laurea University of Applied Sciences.
 
 The frontend is a React single-page application (Vite + React Router). It talks to an Express REST API that stores posts in MongoDB Atlas through Mongoose. Users can list, read, create, edit and delete blog posts.
@@ -77,7 +79,7 @@ Open `http://localhost:5173`. Vite proxies every `/api` request to the backend o
 
 The app is deployed as **one Render web service**. Render builds the React app, and Express serves both the API (`/api/posts`) and the built frontend (`frontend/dist`) from the same address, so no CORS or separate API URL is needed.
 
-**Live demo:** _add your Render URL here_
+**Live demo:** https://workshop06react.onrender.com
 
 Settings (also stored in [`render.yaml`](render.yaml) as a Render Blueprint):
 
